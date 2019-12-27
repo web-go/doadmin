@@ -34,7 +34,7 @@ func ValidatorError(err error) CommonError {
 				res.Errors[f] = transtr
 			}
 		default:
-			res.Errors["errors"] = err.Error()
+			res.Errors["error"] = err.Error()
 		}
 	}
 	return res

@@ -8,7 +8,7 @@ import (
 )
 
 func Success(c rock.Context, data interface{}) {
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, rock.M{"data": data})
 }
 func Error(c rock.Context, err error) {
 	c.JSON(http.StatusBadRequest, validate.ValidatorError(err))

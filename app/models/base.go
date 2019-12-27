@@ -14,15 +14,15 @@ var DB *gorm.DB
 var validate *validator.Validate
 
 type BaseModel struct {
-	ID          uint64    `gorm:"primary_key" json:"id"`
-	CreatedTime time.Time `json:"created_time" sql:"DEFAULT:current_timestamp"`
-	UpdatedTime time.Time `json:"updated_time" sql:"DEFAULT:current_timestamp"`
+	ID        uint64    `gorm:"primary_key" json:"id"`
+	CreatedAt time.Time `json:"created_at" sql:"DEFAULT:current_timestamp"`
+	UpdatedAt time.Time `json:"updated_at" sql:"DEFAULT:current_timestamp"`
 }
 
 //初始化数据库并产生数据库全局变量
 func InitDB(config config.Config) *gorm.DB {
 	DB = config.DB
-	DB.LogMode(true)
+	DB.LogMode(false)
 	return DB
 }
 
@@ -33,5 +33,5 @@ func TableName(name string) string {
 //注册数据库表专用
 func Migrate(db *gorm.DB) {
 	// db.DropTable(User{}, Role{}, Menu{})
-	db.AutoMigrate(User{})
+	db.AutoMigrate(User{}, Role{}, Menu{}, Api{})
 }

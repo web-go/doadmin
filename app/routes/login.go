@@ -11,15 +11,17 @@ import (
 )
 
 func Login(c rock.Context) {
-	username := c.MustPostString("username", "")
-	password := c.MustPostString("password", "")
-	user := models.LoginModel{Username: username, Password: password}
+	user := &models.LoginModel{}
+	if err := c.ShouldBindJSON(user); err != nil {
+		utils.Fail(c, "用户名或密码错误")
+		return
+	}
 	if exit, u := user.Login(); exit {
 		tokenNext(c, u)
 		return
 	}
 
-	utils.Fail(c, rock.M{"errors": "用户名或密码错误"})
+	utils.Fail(c, "用户名或密码错误")
 }
 
 //登录以后签发jwt

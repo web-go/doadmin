@@ -18,6 +18,25 @@ func AdminRoutes() *rock.App {
 	r.POST("/users", CreateUser)
 	r.PUT("/users/{id}", UpdateUser)
 	r.DELETE("/users/{id}", DeleteUser)
+	r.GET("/users/profile", Profile)
+
+	r.GET("/roles", ListRole)
+	r.POST("/roles", CreateRole)
+	r.GET("/roles/{id}", ShowRole)
+	r.PUT("/roles/{id}", UpdateRole)
+
+	r.GET("/apis", ListApi)
+	r.POST("/apis", CreateApi)
+	r.GET("/apis/{id}", ShowApi)
+	r.PUT("/apis/{id}", UpdateApi)
+	r.DELETE("/apis/{id}", DeleteApi)
+
+	r.GET("/menus", ListMenu)
+	r.POST("/menus", CreateMenu)
+	r.GET("/menus/{id}", ShowMenu)
+	r.PUT("/menus/{id}", UpdateMenu)
+	r.DELETE("/menus/{id}", DeleteMenu)
+
 	return r
 }
 func Auth() rock.HandlerFunc {

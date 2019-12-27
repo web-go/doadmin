@@ -12,7 +12,7 @@ func ListUser(c rock.Context) {
 	repo := models.Repo{
 		Ctx:          c,
 		Result:       &ms,
-		DB:           models.DB,
+		DB:           models.DB.Preload("Roles"),
 		Pagination:   models.Pagination{PageSize: size},
 		AutoResponse: true,
 		ApplyWhere:   true,

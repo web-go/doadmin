@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -11,7 +10,6 @@ import (
 
 func JWTAuth() rock.HandlerFunc {
 	return func(c rock.Context) {
-
 		token := c.Request().Header.Get("Authorization")
 		if token == "" {
 			c.AbortWithStatusJSON(401, rock.M{"errors": "未登录或非法访问"})
@@ -28,15 +26,15 @@ func JWTAuth() rock.HandlerFunc {
 			c.AbortWithStatusJSON(401, rock.M{"errors": err.Error()})
 			return
 		}
-		fmt.Println("xiao")
+		// fmt.Println("xiao")
 		// pp.Println(inject.Obj.Enforcer.GetGroupingPolicy())
 		// pp.Println(claims.Username, c.Request().URL.Path, c.Request().Method)
 		// if b, err := inject.Obj.Enforcer.Enforce(claims.Username, c.Request().URL.Path, c.Request().Method); err != nil {
-		// 	utils.CodeMsg(c, 403, "登录用户 校验权限失败")
+		// 	c.JSON(403, rock.M{"errors": "登录用户 校验权限失败"})
 		// 	c.Abort()
 		// 	return
 		// } else if !b {
-		// 	utils.CodeMsg(c, 403, "登录用户 没有权限")
+		// 	c.JSON(403, rock.M{"errors": "登录用户 没有权限"})
 		// 	c.Abort()
 		// 	return
 		// }

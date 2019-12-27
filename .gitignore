@@ -2,3 +2,5 @@ backend
 /tmp
 /log
 docms.db
+.DS_Store
+/static
