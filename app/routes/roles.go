@@ -3,17 +3,18 @@ package routes
 import (
 	"github.com/go-rock/rock"
 	"github.com/web-go/doadmin/app/models"
+	"github.com/web-go/doadmin/pkg/inject"
 	"github.com/web-go/doadmin/pkg/utils"
 )
 
 func ListRole(c rock.Context) {
 	var ms models.Roles
-	size := c.MustQueryInt("size", 10)
+	limit := c.MustQueryInt("limit", 10)
 	repo := models.Repo{
 		Ctx:          c,
 		Result:       &ms,
 		DB:           models.DB.Preload("Menus").Preload("Apis"),
-		Pagination:   models.Pagination{PageSize: size},
+		Pagination:   models.Pagination{PageSize: limit},
 		AutoResponse: true,
 		ApplyWhere:   true,
 	}
@@ -60,10 +61,6 @@ func ShowRole(c rock.Context) {
 	id := c.MustParamInt("id", 0)
 	m := &models.Role{}
 	m.ID = uint64(id)
-	// if b := models.DB.Where("id = ?", id).First(m).RecordNotFound(); b {
-	// 	utils.NotFound(c, "记录不存在")
-	// 	return
-	// }
 
 	if err := m.Get(); err != nil {
 		utils.Fail(c, err.Error())
@@ -71,4 +68,30 @@ func ShowRole(c rock.Context) {
 	}
 
 	c.JSON(200, rock.M{"role": m})
+}
+
+func DeleteRole(c rock.Context) {
+	id := c.MustParamInt("id", 0)
+	m := &models.Role{}
+	m.ID = uint64(id)
+
+	if err := models.DB.Preload("Users").First(m).Error; err != nil {
+		utils.Fail(c, err.Error())
+		return
+	}
+	// 如果有用户关联，不可删除
+
+	if len(m.Users) > 0 {
+		utils.Fail(c, "删除失败：此角色有用户正在使用禁止删除")
+		return
+	}
+
+	name := m.Name
+	if err := m.Delete(); err != nil {
+		utils.Error(c, err)
+		return
+	}
+	inject.Obj.Enforcer.DeletePermissionsForUser(name)
+
+	utils.Success(c, rock.M{"code": 0})
 }

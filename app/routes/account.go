@@ -23,7 +23,7 @@ func Profile(c rock.Context) {
 		models.DB.Find(&menus)
 		roles = []string{"超级管理员"}
 		for _, menu := range menus {
-			tmpMenu := rock.M{"path": menu.Name, "name": menu.Name, "component": menu.Path, "meta": rock.M{"title": menu.Title, "icon": menu.Icon}, "parent_id": menu.ParentID, "children": []string{}, "id": menu.ID}
+			tmpMenu := rock.M{"path": menu.Path, "name": menu.Name, "component": menu.Component, "meta": rock.M{"title": menu.Title, "icon": menu.Icon}, "parent_id": menu.ParentID, "id": menu.ID}
 			if utils.Contains(ms, tmpMenu) < 0 {
 				ms = append(ms, tmpMenu)
 			}
@@ -32,7 +32,7 @@ func Profile(c rock.Context) {
 		for _, role := range m.Roles {
 			roles = append(roles, role.Name)
 			for _, menu := range role.Menus {
-				tmpMenu := rock.M{"path": menu.Name, "name": menu.Name, "component": menu.Path, "meta": rock.M{"title": menu.Title, "icon": menu.Icon}, "parent_id": menu.ParentID, "children": []string{}, "id": menu.ID}
+				tmpMenu := rock.M{"path": menu.Path, "name": menu.Name, "component": menu.Component, "meta": rock.M{"title": menu.Title, "icon": menu.Icon}, "parent_id": menu.ParentID, "id": menu.ID}
 				if utils.Contains(ms, tmpMenu) < 0 {
 					ms = append(ms, tmpMenu)
 				}

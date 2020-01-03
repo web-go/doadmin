@@ -22,7 +22,7 @@ type BaseModel struct {
 //初始化数据库并产生数据库全局变量
 func InitDB(config config.Config) *gorm.DB {
 	DB = config.DB
-	DB.LogMode(false)
+	DB.LogMode(true)
 	return DB
 }
 

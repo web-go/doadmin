@@ -8,12 +8,12 @@ import (
 
 func ListMenu(c rock.Context) {
 	var ms models.Menus
-	size := c.MustQueryInt("size", 10)
+	limit := c.MustQueryInt("limit", 10)
 	repo := models.Repo{
 		Ctx:          c,
 		Result:       &ms,
 		DB:           models.DB.Where("parent_id = ?", 0),
-		Pagination:   models.Pagination{PageSize: size},
+		Pagination:   models.Pagination{PageSize: limit},
 		AutoResponse: false,
 		ApplyWhere:   true,
 	}
@@ -27,7 +27,7 @@ func ListMenu(c rock.Context) {
 		utils.Fail(c, err.Error())
 		return
 	}
-	utils.Success(c, rock.M{"data": ms, "pagination": repo.Pagination})
+	c.JSON(200, rock.M{"menus": ms, "pagination": repo.Pagination})
 }
 
 func CreateMenu(c rock.Context) {

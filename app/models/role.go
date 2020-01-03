@@ -13,6 +13,7 @@ type Role struct {
 	BaseModel
 	Name string `json:"name" binding:"required,uniq,lte=8"`
 
+	Users    []User           `json:"-" gorm:"many2many:sys_roles_users"`
 	Menus    []Menu           `json:"menus" gorm:"many2many:sys_menus_roles"`
 	Apis     []Api            `json:"apis" gorm:"many2many:sys_apis_roles"`
 	Enforcer *casbin.Enforcer `json:"-" inject:""`
@@ -49,7 +50,6 @@ func (m *Role) Delete() error {
 	if err != nil {
 		return err
 	}
-	m.Enforcer.DeletePermissionsForUser(m.Name)
 	return nil
 }
 

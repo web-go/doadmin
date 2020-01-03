@@ -20,6 +20,7 @@ require (
 	github.com/jinzhu/gorm v1.9.11
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
+	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/yudai/pp v2.0.1+incompatible
 	golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c
 	gopkg.in/yaml.v2 v2.2.7 // indirect

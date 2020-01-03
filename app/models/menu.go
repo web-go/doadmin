@@ -9,13 +9,14 @@ type Menus []Menu
 // Menu
 type Menu struct {
 	BaseModel
-	Name     string `json:"name" binding:"required,uniq"`
-	Title    string `json:"title" binding:"required,uniq"`
-	Path     string `json:"path" binding:"required"`
-	Icon     string `json:"icon" binding:"required"`
-	Position int    `json:"position" binding:"required"`
-	Hidden   bool   `json:"hidden"`
-	ParentID uint64 `json:"parent_id"`
+	Name      string `json:"name" binding:"required,uniq"`
+	Path      string `json:"path" binding:"required,uniq"`
+	Title     string `json:"title" binding:"required"`
+	Component string `json:"component" binding:"required"`
+	Icon      string `json:"icon" binding:"required"`
+	Position  int    `json:"position" binding:"required"`
+	Hidden    bool   `json:"hidden"`
+	ParentID  uint64 `json:"parent_id"`
 	// Children menuSlice `gorm:"foreignkey:ParentID" json:"children"`
 	Children []Menu `gorm:"-" json:"children"`
 	Roles    []Role `json:"-" gorm:"many2many:sys_menus_roles"`

@@ -24,6 +24,7 @@ func AdminRoutes() *rock.App {
 	r.POST("/roles", CreateRole)
 	r.GET("/roles/{id}", ShowRole)
 	r.PUT("/roles/{id}", UpdateRole)
+	r.DELETE("/roles/{id}", DeleteRole)
 
 	r.GET("/apis", ListApi)
 	r.POST("/apis", CreateApi)

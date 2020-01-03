@@ -8,12 +8,12 @@ import (
 
 func ListUser(c rock.Context) {
 	var ms models.Users
-	size := c.MustQueryInt("size", 10)
+	limit := c.MustQueryInt("limit", 10)
 	repo := models.Repo{
 		Ctx:          c,
 		Result:       &ms,
 		DB:           models.DB.Preload("Roles"),
-		Pagination:   models.Pagination{PageSize: size},
+		Pagination:   models.Pagination{PageSize: limit},
 		AutoResponse: true,
 		ApplyWhere:   true,
 	}
