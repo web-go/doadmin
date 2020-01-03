@@ -124,3 +124,32 @@ func AddRoleMenus(c rock.Context) {
 
 	c.JSON(200, addMenuRoleInfo)
 }
+
+type AddApiRoleInfo struct {
+	Apis []models.Api `json:"apis"`
+}
+
+func AddRoleApis(c rock.Context) {
+	id := c.MustParamInt("id", 0)
+	m := &models.Role{}
+	m.ID = uint64(id)
+	if err := m.Get(); err != nil {
+		utils.NotFound(c, err.Error())
+		return
+	}
+
+	addApiRoleInfo := &AddApiRoleInfo{}
+
+	if err := c.ShouldBindJSON(addApiRoleInfo); err != nil {
+		utils.Error(c, err)
+		return
+	}
+
+	// 设置role菜单
+	if err := models.DB.Model(m).Association("Apis").Replace(addApiRoleInfo.Apis).Error; err != nil {
+		utils.Error(c, err)
+		return
+	}
+
+	c.JSON(200, addApiRoleInfo)
+}

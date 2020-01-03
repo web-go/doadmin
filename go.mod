@@ -19,6 +19,7 @@ require (
 	github.com/go-rock/rock v0.1.0
 	github.com/jinzhu/gorm v1.9.12-0.20191206142228-79a77d771dee
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
+	github.com/k0kubun/pp v3.0.2-0.20191028001127-dae4d5f2e789+incompatible
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/yudai/pp v2.0.1+incompatible
 	golang.org/x/crypto v0.0.0-20191205180655-e7c4368fe9dd
