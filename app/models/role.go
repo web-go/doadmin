@@ -1,9 +1,11 @@
 package models
 
 import (
+	"errors"
 	"time"
 
 	"github.com/casbin/casbin/v2"
+	"github.com/jinzhu/gorm"
 )
 
 type Roles []Role
@@ -46,11 +48,22 @@ func (m *Role) Update() error {
 
 // 根据Id删除
 func (m *Role) Delete() error {
-	err := DB.Delete(&m).Error
-	if err != nil {
-		return err
-	}
-	return nil
+	return DB.Transaction(func(tx *gorm.DB) error {
+		if len(m.Users) > 0 {
+			return errors.New("此角色有用户正在使用禁止删除")
+		}
+		// 删除关联的菜单和api
+		if err := tx.Model(m).Association("Menus").Clear().Error; err != nil {
+			return err
+		}
+		if err := tx.Model(m).Association("Apis").Clear().Error; err != nil {
+			return err
+		}
+		if err := tx.Delete(&m).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 }
 
 // 加载角色权限策略

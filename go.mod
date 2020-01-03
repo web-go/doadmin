@@ -17,11 +17,10 @@ require (
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-playground/validator/v10 v10.0.1
 	github.com/go-rock/rock v0.1.0
-	github.com/jinzhu/gorm v1.9.11
+	github.com/jinzhu/gorm v1.9.12-0.20191206142228-79a77d771dee
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
-	github.com/kr/pretty v0.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/yudai/pp v2.0.1+incompatible
-	golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c
+	golang.org/x/crypto v0.0.0-20191205180655-e7c4368fe9dd
 	gopkg.in/yaml.v2 v2.2.7 // indirect
 )

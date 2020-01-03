@@ -81,10 +81,10 @@ func DeleteRole(c rock.Context) {
 	}
 	// 如果有用户关联，不可删除
 
-	if len(m.Users) > 0 {
-		utils.Fail(c, "删除失败：此角色有用户正在使用禁止删除")
-		return
-	}
+	// if len(m.Users) > 0 {
+	// 	utils.Fail(c, "删除失败：此角色有用户正在使用禁止删除")
+	// 	return
+	// }
 
 	name := m.Name
 	if err := m.Delete(); err != nil {
@@ -94,4 +94,33 @@ func DeleteRole(c rock.Context) {
 	inject.Obj.Enforcer.DeletePermissionsForUser(name)
 
 	utils.Success(c, rock.M{"code": 0})
+}
+
+type AddMenuRoleInfo struct {
+	Menus []models.Menu `json:"menus"`
+}
+
+func AddRoleMenus(c rock.Context) {
+	id := c.MustParamInt("id", 0)
+	m := &models.Role{}
+	m.ID = uint64(id)
+	if err := m.Get(); err != nil {
+		utils.NotFound(c, err.Error())
+		return
+	}
+
+	addMenuRoleInfo := &AddMenuRoleInfo{}
+
+	if err := c.ShouldBindJSON(addMenuRoleInfo); err != nil {
+		utils.Error(c, err)
+		return
+	}
+
+	// 设置role菜单
+	if err := models.DB.Model(m).Association("Menus").Replace(addMenuRoleInfo.Menus).Error; err != nil {
+		utils.Error(c, err)
+		return
+	}
+
+	c.JSON(200, addMenuRoleInfo)
 }
