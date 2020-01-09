@@ -7,11 +7,11 @@ type Apis []Api
 // Api
 type Api struct {
 	BaseModel
-	Name        string `json:"name" binding:"required,uniq"`
+	// Name        string `json:"name" binding:"required,uniq"`
 	Path        string `json:"path" binding:"required"`
 	Method      string `json:"method" binding:"required"`
 	Group       string `json:"group" binding:"required"`
-	Description string `json:"description" binding:"required"`
+	Description string `json:"description" binding:"required,uniq"`
 	Hidden      bool   `json:"hidden"`
 }
 
