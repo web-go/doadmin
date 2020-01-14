@@ -23,5 +23,6 @@ require (
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/yudai/pp v2.0.1+incompatible
 	golang.org/x/crypto v0.0.0-20191205180655-e7c4368fe9dd
+	google.golang.org/genproto v0.0.0-20200108215221-bd8f9a0ef82f
 	gopkg.in/yaml.v2 v2.2.7 // indirect
 )

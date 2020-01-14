@@ -6,6 +6,8 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-rock/rock"
+	"github.com/web-go/doadmin/pkg/inject"
+	"github.com/yudai/pp"
 )
 
 func JWTAuth() rock.HandlerFunc {
@@ -27,18 +29,20 @@ func JWTAuth() rock.HandlerFunc {
 			return
 		}
 		// pp.Println(inject.Obj.Enforcer.GetGroupingPolicy())
-		// pp.Println(claims.Username, c.Request().URL.Path, c.Request().Method)
-		// if c.Request().URL.Path != "/api/v1/sys/users/profile" {
-		// 	if b, err := inject.Obj.Enforcer.Enforce(claims.Username, c.Request().URL.Path, c.Request().Method); err != nil {
-		// 		c.JSON(403, rock.M{"errors": "登录用户 校验权限失败"})
-		// 		c.Abort()
-		// 		return
-		// 	} else if !b {
-		// 		c.JSON(403, rock.M{"errors": "登录用户 没有权限"})
-		// 		c.Abort()
-		// 		return
-		// 	}
-		// }
+		pp.Println(inject.Obj.Enforcer.GetPolicy(), inject.Obj.Enforcer.GetGroupingPolicy())
+
+		pp.Println(claims.Username, c.Request().URL.Path, c.Request().Method)
+		if c.Request().URL.Path != "/api/v1/sys/users/profile" {
+			if b, err := inject.Obj.Enforcer.Enforce(claims.Username, c.Request().URL.Path, c.Request().Method); err != nil {
+				c.JSON(403, rock.M{"errors": "登录用户 校验权限失败"})
+				c.Abort()
+				return
+			} else if !b {
+				c.JSON(403, rock.M{"errors": "登录用户 没有权限"})
+				c.Abort()
+				return
+			}
+		}
 
 		c.Set("claims", claims)
 	}

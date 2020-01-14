@@ -5,6 +5,7 @@ import (
 	"github.com/web-go/doadmin/app/models"
 	"github.com/web-go/doadmin/pkg/inject"
 	"github.com/web-go/doadmin/pkg/utils"
+	"github.com/yudai/pp"
 )
 
 func ListRole(c rock.Context) {
@@ -54,7 +55,7 @@ func UpdateRole(c rock.Context) {
 		return
 	}
 
-	c.JSON(200, rock.M{"role": m})
+	utils.Success(c, rock.M{"role": m})
 }
 
 func ShowRole(c rock.Context) {
@@ -67,7 +68,7 @@ func ShowRole(c rock.Context) {
 		return
 	}
 
-	c.JSON(200, rock.M{"role": m})
+	utils.Success(c, rock.M{"role": m})
 }
 
 func DeleteRole(c rock.Context) {
@@ -79,12 +80,6 @@ func DeleteRole(c rock.Context) {
 		utils.Fail(c, err.Error())
 		return
 	}
-	// 如果有用户关联，不可删除
-
-	// if len(m.Users) > 0 {
-	// 	utils.Fail(c, "删除失败：此角色有用户正在使用禁止删除")
-	// 	return
-	// }
 
 	name := m.Name
 	if err := m.Delete(); err != nil {
@@ -150,6 +145,17 @@ func AddRoleApis(c rock.Context) {
 		utils.Error(c, err)
 		return
 	}
+
+	inject.Obj.Enforcer.RemoveFilteredPolicy(0, m.Name)
+	for _, api := range addApiRoleInfo.Apis {
+
+		if api.Path == "" {
+			continue
+		}
+		inject.Obj.Enforcer.AddPermissionForUser(m.Name, api.Path, api.Method)
+	}
+
+	pp.Println(inject.Obj.Enforcer.GetPolicy(), inject.Obj.Enforcer.GetGroupingPolicy())
 
 	c.JSON(200, addApiRoleInfo)
 }

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/casbin/casbin/v2"
+	"github.com/jinzhu/gorm"
 )
 
 type UserModel struct {
@@ -51,13 +52,24 @@ func (m *User) Update() error {
 
 // 根据Id查询
 func (m *User) Get() error {
-	err := DB.Preload("Roles.Menus").First(&m).Error
+	err := DB.Preload("Roles.Menus").Preload("Roles.Apis").First(&m).Error
 	return err
 }
 
 // 根据Id删除
 func (m *User) Delete() error {
-	return DB.Delete(&m).Error
+	// return DB.Delete(&m).Error
+	return DB.Transaction(func(tx *gorm.DB) error {
+		// 删除关联的角色
+		if err := tx.Model(m).Association("Roles").Clear().Error; err != nil {
+			return err
+		}
+
+		if err := tx.Delete(&m).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 }
 
 // 加载所有用户角色策略

@@ -12,7 +12,7 @@ func ListMenu(c rock.Context) {
 	repo := models.Repo{
 		Ctx:          c,
 		Result:       &ms,
-		DB:           models.DB.Where("parent_id = ?", 0),
+		DB:           models.DB.Where("parent_id = ?", 0).Order("position", true),
 		Pagination:   models.Pagination{PageSize: limit},
 		AutoResponse: false,
 		ApplyWhere:   true,
@@ -62,7 +62,7 @@ func UpdateMenu(c rock.Context) {
 		return
 	}
 
-	c.JSON(200, rock.M{"menu": m})
+	utils.Success(c, rock.M{"menu": m})
 }
 
 func ShowMenu(c rock.Context) {
@@ -73,8 +73,7 @@ func ShowMenu(c rock.Context) {
 		utils.Fail(c, err.Error())
 		return
 	}
-
-	c.JSON(200, rock.M{"menu": m})
+	utils.Success(c, rock.M{"menu": m})
 }
 
 func DeleteMenu(c rock.Context) {

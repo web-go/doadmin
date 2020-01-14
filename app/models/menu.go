@@ -13,7 +13,7 @@ type Menu struct {
 	Path      string `json:"path" binding:"required,uniq"`
 	Title     string `json:"title" binding:"required"`
 	Component string `json:"component" binding:"required"`
-	Icon      string `json:"icon" binding:"required"`
+	Icon      string `json:"icon"`
 	Position  int    `json:"position" binding:"required"`
 	Hidden    bool   `json:"hidden"`
 	ParentID  uint64 `json:"parent_id"`
@@ -40,7 +40,7 @@ func (m *Menu) Get() error {
 // 修改
 func (m *Menu) Update() error {
 	m.UpdatedAt = time.Now()
-	return DB.Model(&m).Update(m).Error
+	return DB.Save(&m).Error
 }
 
 // 获取总数

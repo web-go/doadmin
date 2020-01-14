@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/go-rock/rock"
 	"github.com/web-go/doadmin/app/models"
+	"github.com/web-go/doadmin/pkg/inject"
 	"github.com/web-go/doadmin/pkg/utils"
 )
 
@@ -84,9 +85,47 @@ func DeleteUser(c rock.Context) {
 		utils.NotFound(c, "记录不存在")
 		return
 	}
+
+	username := m.Username
+
 	if err := m.Delete(); err != nil {
 		utils.Error(c, err)
 		return
 	}
+	inject.Obj.Enforcer.DeleteRolesForUser(username)
 	utils.Success(c, rock.M{"msg": "ok"})
+}
+
+type AddUserRoleInfo struct {
+	Roles []models.Role `json:"roles"`
+}
+
+func AddUserRoles(c rock.Context) {
+	id := c.MustParamInt("id", 0)
+	m := &models.User{}
+	m.ID = uint64(id)
+	if err := m.Get(); err != nil {
+		utils.NotFound(c, err.Error())
+		return
+	}
+
+	addUserRoleInfo := &AddUserRoleInfo{}
+
+	if err := c.ShouldBindJSON(addUserRoleInfo); err != nil {
+		utils.Error(c, err)
+		return
+	}
+
+	// 设置用户角色关系
+	if err := models.DB.Model(m).Association("Roles").Replace(addUserRoleInfo.Roles).Error; err != nil {
+		utils.Error(c, err)
+		return
+	}
+
+	inject.Obj.Enforcer.DeleteRolesForUser(m.Username)
+	for _, role := range addUserRoleInfo.Roles {
+		inject.Obj.Enforcer.AddRoleForUser(m.Username, role.Name)
+	}
+
+	c.JSON(200, addUserRoleInfo)
 }

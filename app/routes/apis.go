@@ -21,16 +21,16 @@ func ListApi(c rock.Context) {
 }
 
 func CreateApi(c rock.Context) {
-	api := &models.Api{}
-	if err := c.ShouldBindJSON(api); err != nil {
+	m := &models.Api{}
+	if err := c.ShouldBindJSON(m); err != nil {
 		utils.Error(c, err)
 		return
 	}
-	if err := api.Add(); err != nil {
+	if err := m.Add(); err != nil {
 		utils.Error(c, err)
 		return
 	}
-	utils.Success(c, rock.M{"api": api})
+	utils.Success(c, rock.M{"api": m})
 }
 
 func UpdateApi(c rock.Context) {

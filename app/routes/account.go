@@ -18,24 +18,29 @@ func Profile(c rock.Context) {
 	}
 	var ms []interface{}
 	var roles []string
+	var apis []models.Api
 	if m.Username == "admin" {
 		var menus []models.Menu
 		models.DB.Find(&menus)
 		roles = []string{"超级管理员"}
 		for _, menu := range menus {
-			tmpMenu := rock.M{"path": menu.Path, "name": menu.Name, "component": menu.Component, "meta": rock.M{"title": menu.Title, "icon": menu.Icon}, "parent_id": menu.ParentID, "id": menu.ID}
+			tmpMenu := rock.M{"path": menu.Path, "name": menu.Name, "component": menu.Component, "meta": rock.M{"title": menu.Title, "icon": menu.Icon}, "parent_id": menu.ParentID, "id": menu.ID, "position": menu.Position}
 			if utils.Contains(ms, tmpMenu) < 0 {
 				ms = append(ms, tmpMenu)
 			}
 		}
+		models.DB.Find(&apis)
 	} else {
 		for _, role := range m.Roles {
 			roles = append(roles, role.Name)
 			for _, menu := range role.Menus {
-				tmpMenu := rock.M{"path": menu.Path, "name": menu.Name, "component": menu.Component, "meta": rock.M{"title": menu.Title, "icon": menu.Icon}, "parent_id": menu.ParentID, "id": menu.ID}
+				tmpMenu := rock.M{"path": menu.Path, "name": menu.Name, "component": menu.Component, "meta": rock.M{"title": menu.Title, "icon": menu.Icon}, "parent_id": menu.ParentID, "id": menu.ID, "position": menu.Position}
 				if utils.Contains(ms, tmpMenu) < 0 {
 					ms = append(ms, tmpMenu)
 				}
+			}
+			for _, api := range role.Apis {
+				apis = append(apis, api)
 			}
 		}
 	}
@@ -47,7 +52,7 @@ func Profile(c rock.Context) {
 	// }
 
 	// c.JSON(200, rock.M{"user": rock.M{"id": m.ID, "username": m.Username, "nickname": m.Nickname}, "menus": ms})
-	utils.Success(c, rock.M{"id": m.ID, "name": m.Username, "nickname": m.Nickname, "avatar": "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif", "menus": ms, "roles": roles})
+	utils.Success(c, rock.M{"id": m.ID, "name": m.Username, "nickname": m.Nickname, "avatar": "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif", "menus": ms, "roles": roles, "apis": apis})
 }
 
 // func UserMenus(c rock.Context) {
