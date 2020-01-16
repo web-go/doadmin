@@ -2,6 +2,8 @@ package models
 
 import (
 	"time"
+
+	"github.com/jinzhu/gorm"
 )
 
 type Menus []Menu
@@ -51,8 +53,19 @@ func (m *Menu) Count() (int, error) {
 
 // 根据Id删除
 func (m *Menu) Delete() error {
-	DB.Model(&m).Association("Roles").Clear()
-	return DB.Delete(&m).Error
+	return DB.Transaction(func(tx *gorm.DB) error {
+		// 清除权限关联菜单
+		DB.Model(&m).Association("Roles").Clear()
+		// 设置子菜单parent_id 为 0
+		if err := DB.Model(Menu{}).Where("parent_id = ?", m.ID).Updates(map[string]interface{}{"parent_id": 0}).Error; err != nil {
+			return err
+		}
+		if err := DB.Delete(&m).Error; err != nil {
+			return err
+		}
+		// 返回 nil 提交事务
+		return nil
+	})
 }
 
 //获取基础路由树
